@@ -1,0 +1,18 @@
+id: 0
+metadata: []
+parts:
+  header:
+    components: []
+    info:
+      perc: 0.05
+      bgcolor: [30,215,96]
+  body:
+    components: []
+    info:
+      perc: 1
+      bgcolor: [25,25,25] # bgcolors can be in either a string or a list of 3 (R, G, B)
+  footer:
+    components: []
+    info:
+      perc: 0.20
+      bgcolor: [0,0,0]

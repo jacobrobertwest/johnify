@@ -1,0 +1,18 @@
+id: 0
+metadata: []
+parts:
+  header:
+    components: []
+    info:
+      perc: 0.25
+      bgcolor: green
+  body:
+    components: []
+    info:
+      perc: 1
+      bgcolor: white
+  footer:
+    components: []
+    info:
+      perc: 0.1
+      bgcolor: orange
