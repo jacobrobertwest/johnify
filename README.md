@@ -1,1 +1,1 @@
-pyinstaller --icon icon.icns --windowed --name "Johnify" --noconfirm --osx-bundle-identifier 'Johnify' --target-arch universal2 --add-data "assets:assets" --hidden-import "yaml" --hidden-import "pygame" main.py
+pyinstaller --icon icon.icns --windowed --name "Johnify" --noconfirm --osx-bundle-identifier 'Johnify' --add-data "assets:assets" --hidden-import "yaml" --hidden-import "pygame" main.py

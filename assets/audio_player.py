@@ -21,6 +21,7 @@ class AudioPlayer:
         self.mixer.music.set_endevent(MUSIC_END)
         self.playing = False
         self.volume = 71
+        self.is_muted = False
         self.started = False
         self.volume_increment = 11
         self.volume_decrement = 9
@@ -70,11 +71,19 @@ class AudioPlayer:
         self.current_song_paused = False
         self.mixer.music.unload()
 
+    def mute(self):
+        self.is_muted = True
+        self.set_mixer_volume(0)
+
     # state update
     def state_update(self):
         self.current_song_pos = self.get_current_song_pos()
         self.current_song_pos_percentage = round((self.current_song_pos / self.current_track_length),5)
         self.volume = int(self.get_mixer_volume()*100)
+        if self.volume > 0:
+            self.is_muted = False
+        else:
+            self.is_muted = True
         self.playing = self.get_mixer_busy()
         if not self.started:
             self.current_song_pos = 0

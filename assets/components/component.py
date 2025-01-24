@@ -36,6 +36,22 @@ class Component(pg.sprite.Sprite):
             if self.rect.collidepoint(mouse_pos):
                 self.surface.fill(self.bgcolor_hov)
 
+    def update_width(self, perc, which_pos):
+        self.surface = pg.Surface((self.width*perc,self.height))
+        if self.bgcolor is not None:
+            self.surface.fill(self.bgcolor)
+        if which_pos == 'topleft':
+            self.rect = self.surface.get_rect(topleft=self.pos)
+        elif which_pos == 'center':
+            self.rect = self.surface.get_rect(center=self.pos)
+        elif which_pos == 'bottomleft':
+            self.rect = self.surface.get_rect(bottomleft=self.pos)
+
+    def get_perc_clicked(self, mouse_pos):
+        absolute_x_click = mouse_pos[0]
+        relative_x_click = absolute_x_click - self.pos[0]
+        return max(min(round(relative_x_click / self.width, 2),1),0)
+        
     def update(self, dt):
         self.enforce_status()
         self.check_hover()

@@ -56,7 +56,7 @@ class Menu:
         header_height = int(WIN_HEIGHT * header_perc)
         header_width = WIN_WIDTH
         self.header = Component([self.visible_components, self.header_components],header_pos,header_width,header_height,z=1,part=2,bgcolor=header_bgcolor)
-        Label([self.visible_components, self.header_components],"JOHNIFY", 'futura', 15, (15,15,15), (8,8), 2, part=2, bgcolor=None)
+        Label([self.visible_components, self.header_components],"JOHNIFY                      Brought to you by c h point", 'futura', 15, (15,15,15), (8,8), 2, part=2, bgcolor=None)
         self.page_button = Img([self.visible_components, self.footer_components],resource_path('assets/images/next_page.png'),(1175,8),2,part=2,which_pos='topleft',dynamic=True,second_img_path=resource_path('assets/images/last_page.png'))
         # build footer
         footer_pos = (0,WIN_HEIGHT)
@@ -73,7 +73,11 @@ class Menu:
         self.play_pause = Img([self.visible_components, self.footer_components],resource_path('assets/images/play.png'),(self.track_bar.rect.centerx,self.track_bar.rect.centery-55),2,part=3,which_pos='center',dynamic=True,second_img_path=resource_path('assets/images/pause.png'))
         self.skip_forward = Img([self.visible_components, self.footer_components],resource_path('assets/images/forward.png'),(self.track_bar.rect.centerx+55,self.track_bar.rect.centery-55),2,part=3,which_pos='center')
         self.skip_backward = Img([self.visible_components, self.footer_components],resource_path('assets/images/backward.png'),(self.track_bar.rect.centerx-55,self.track_bar.rect.centery-55),2,part=3,which_pos='center')
-    
+        # volume bar base
+        self.volume_base = Component([self.visible_components, self.footer_components],(1055,575),80,20,z=2,part=3,bgcolor=(25,25,25),which_pos='topleft')
+        self.volume_bar = Component([self.visible_components, self.footer_components],(1055,575),80,20,z=3,part=3,bgcolor=(30,215,96),which_pos='topleft')
+        self.volume_img = Img([self.visible_components, self.footer_components],resource_path('assets/images/volume.png'),(self.volume_base.rect.centerx-55,self.volume_base.rect.centery),2,part=3,which_pos='center',dynamic=True,second_img_path=resource_path('assets/images/mute.png'))
+
     def load_song_names(self):
         multiplier = 1 if self.song_selection_on_second_page else 0
         self.song_btn_1_idx = 0 + (5 * multiplier)
@@ -120,7 +124,9 @@ class Menu:
             elif event.key == pg.K_0:
                 self.audio_player.set_new_current_song(9)
         elif event.type == pg.MOUSEBUTTONDOWN:
-            if self.play_pause.rect.collidepoint(pg.mouse.get_pos()):
+            if event.button in (4, 5):
+                pass
+            elif self.play_pause.rect.collidepoint(pg.mouse.get_pos()):
                 if self.audio_player.playing:
                     self.audio_player.pause_loaded_song()
                 elif not self.audio_player.playing and not self.audio_player.current_song_paused:
@@ -134,6 +140,8 @@ class Menu:
             elif self.page_button.rect.collidepoint(pg.mouse.get_pos()):
                 self.song_selection_on_second_page = not self.song_selection_on_second_page
                 self.load_song_names()
+            elif self.volume_img.rect.collidepoint(pg.mouse.get_pos()):
+                self.audio_player.mute()
             elif self.song_btn_1.rect.collidepoint(pg.mouse.get_pos()):
                 self.audio_player.set_new_current_song(self.song_btn_1_idx)
             elif self.song_btn_2.rect.collidepoint(pg.mouse.get_pos()):
@@ -144,8 +152,12 @@ class Menu:
                 self.audio_player.set_new_current_song(self.song_btn_4_idx)
             elif self.song_btn_5.rect.collidepoint(pg.mouse.get_pos()):
                 self.audio_player.set_new_current_song(self.song_btn_5_idx)
+            elif self.volume_base.rect.collidepoint(pg.mouse.get_pos()):
+                new_perc = self.volume_base.get_perc_clicked(pg.mouse.get_pos())
+                self.audio_player.set_mixer_volume(new_perc*100)
         elif event.type == MUSIC_END:
             self.audio_player.skip_to_next_song()
+            self.audio_player.play_loaded_song()
 
     def update(self, dt):
         self.body_components.update(dt)
@@ -154,6 +166,8 @@ class Menu:
         self.track_pos_bar.update_track_bar(self.audio_player.current_song_pos_percentage)
         self.play_pause.dynamic_image(self.audio_player.playing)
         self.page_button.dynamic_image(self.song_selection_on_second_page)
+        self.volume_img.dynamic_image(self.audio_player.is_muted)
+        self.volume_bar.update_width(round(self.audio_player.get_mixer_volume(),2),'topleft')
 
     def render(self):
         self.body_components.custom_draw()

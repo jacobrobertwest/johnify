@@ -5,7 +5,7 @@ from assets.audio_player import AudioPlayer
 from assets.pgtimer import PGTimer
 import sys
 
-VERSION = '0.1'
+VERSION = '1.0'
 
 class App:
     def __init__(self):
